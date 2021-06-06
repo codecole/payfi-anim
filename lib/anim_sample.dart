@@ -107,7 +107,6 @@ class _AnimSampleState extends State<AnimSample>
               child: Text('Fire'),
             ),
           ),
-          SlideAction()
         ],
       ),
     );
