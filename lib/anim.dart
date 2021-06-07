@@ -12,24 +12,31 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
   bool isStatic = true;
   Animation<double> _angle;
   Animation<double> _containterSize;
+  Animation<double> _opacity;
 
   @override
   void initState() {
     super.initState();
     _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 700))
+        AnimationController(vsync: this, duration: Duration(seconds: 1))
           ..forward();
     _offsetAnimation = Tween<Offset>(
       begin: Offset(0.0, 0.0),
       end: Offset(-1.2, 0.0),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    _angle = Tween<double>(begin: 0, end: 45).animate(CurvedAnimation(
+    _angle = Tween<double>(begin: (pi * 5)/180, end: pi / 4).animate(CurvedAnimation(
+        parent: _controller,
+        // curve: Interval(0.12, 0.25, curve: Curves.ease),
+        curve: Curves.ease));
+
+    _containterSize = Tween<double>(begin: 0.8, end: 1).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0.12, 0.25, curve: Curves.ease),
+      // curve: Interval(0.12, 0.25, curve: Curves.ease),
+      curve: Curves.ease,
     ));
 
-    _containterSize = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
+      _opacity = Tween<double>(begin: 0.4, end: 1).animate(CurvedAnimation(
       parent: _controller,
       // curve: Interval(0.12, 0.25, curve: Curves.ease),
       curve: Curves.ease,
@@ -55,25 +62,12 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
         children: [
           Expanded(
             child: Center(
-              child: AnimatedBuilder(
-                animation: _controller,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(53),
-                    color: Colors.green,
-                  ),
-                  width: 250,
-                  height: 80.0,
-                ),
-                builder: (context, child) {
-                  print(_angle.value);
-                  return Transform.rotate(
-                      // transform: Matrix4.skew(0, 0)..rotateZ(_angle.value),
-                      alignment: FractionalOffset.center,
-                      angle: -_angle.value,
-                      origin: Offset(-125, 0),
-                      child: child);
-                },
+              child: Stack(
+                children: [
+                  buildAnimatedCylinder(-1, Colors.lightBlue),
+                  buildAnimatedCylinder(0, Colors.lightBlue),
+                  buildAnimatedCylinder(1, Colors.lightBlue)
+                ],
               ),
             ),
           ),
@@ -91,6 +85,39 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget buildAnimatedCylinder(int angleMultiplier, Color boxColor) {
+    return AnimatedBuilder(
+      animation: _controller,
+      // child: ,
+      builder: (context, child) {
+        return Transform.rotate(
+            // transform: Matrix4.skew(0, 0)..rotateZ(_angle.value),
+            alignment: FractionalOffset.center,
+            angle: _angle.value * angleMultiplier,
+            origin: Offset(-125, 0),
+            child: Transform(
+                transform:
+                    Matrix4.diagonal3Values(_containterSize.value, 1, 1.0),
+                // origin: Offset(-125, 40),
+                child: cylinder(250, boxColor)));
+      },
+    );
+  }
+
+  Widget cylinder(height, color) {
+    return Opacity(
+      opacity: _opacity.value,
+          child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(53),
+          color: color,
+        ),
+        width: height,
+        height: 80.0,
       ),
     );
   }
