@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payfi_anim/anim.dart';
-import 'package:payfi_anim/anim2.dart';
+
 import 'package:payfi_anim/anim_sample.dart';
 
 void main() {

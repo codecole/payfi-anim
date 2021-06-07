@@ -21,14 +21,15 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
         AnimationController(vsync: this, duration: Duration(seconds: 1))
           ..forward();
     _offsetAnimation = Tween<Offset>(
-      begin: Offset(0.0, 0.0),
-      end: Offset(-1.2, 0.0),
+      begin: Offset(1.0, 0.5),
+      end: Offset(-0.1, 0.5),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    _angle = Tween<double>(begin: (pi * 5)/180, end: pi / 4).animate(CurvedAnimation(
-        parent: _controller,
-        // curve: Interval(0.12, 0.25, curve: Curves.ease),
-        curve: Curves.ease));
+    _angle = Tween<double>(begin: (pi * 5) / 180, end: pi / 4)
+        .animate(CurvedAnimation(
+            parent: _controller,
+            // curve: Interval(0.12, 0.25, curve: Curves.ease),
+            curve: Curves.ease));
 
     _containterSize = Tween<double>(begin: 0.8, end: 1).animate(CurvedAnimation(
       parent: _controller,
@@ -36,7 +37,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
       curve: Curves.ease,
     ));
 
-      _opacity = Tween<double>(begin: 0.4, end: 1).animate(CurvedAnimation(
+    _opacity = Tween<double>(begin: 0.02, end: 1).animate(CurvedAnimation(
       parent: _controller,
       // curve: Interval(0.12, 0.25, curve: Curves.ease),
       curve: Curves.ease,
@@ -64,9 +65,28 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
             child: Center(
               child: Stack(
                 children: [
-                  buildAnimatedCylinder(-1, Colors.lightBlue),
-                  buildAnimatedCylinder(0, Colors.lightBlue),
-                  buildAnimatedCylinder(1, Colors.lightBlue)
+                  buildAnimatedCylinder(
+                    1,
+                    Color(0xFF05F182),
+                    // Colors.black),
+                  ),
+                  Positioned(
+                      top: 25,
+                      child: buildAnimatedCylinder(0, Color(0xff0815B3))),
+                  Padding(
+                    padding: EdgeInsets.only(top: 55),
+                    child: buildAnimatedCylinder(-1, Color(0xFF05F182)),
+                  ),
+                  SlideTransition(
+                    position: _offsetAnimation,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 1.0),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.red,
+                        radius: 35.0,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -81,7 +101,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                 isStatic ? _controller.forward() : _controller.reverse();
                 // _controller.forward();
               },
-              child: Text('Fire'),
+              child: Text(isStatic ? 'Fire' : 'Return'),
             ),
           ),
         ],
@@ -103,7 +123,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                 transform:
                     Matrix4.diagonal3Values(_containterSize.value, 1, 1.0),
                 // origin: Offset(-125, 40),
-                child: cylinder(250, boxColor)));
+                child: cylinder(250.0, boxColor)));
       },
     );
   }
@@ -111,7 +131,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
   Widget cylinder(height, color) {
     return Opacity(
       opacity: _opacity.value,
-          child: Container(
+      child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(53),
           color: color,
@@ -122,28 +142,3 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
     );
   }
 }
-
-// class RoundedRectangle extends StatelessWidget {
-//   final double angle;
-//   final Color color;
-//   final double opacity;
-
-//   RoundedRectangle({this.angle, this.color, this.opacity});
-//   @override
-//   Widget build(BuildContext context) {
-//     return Transform.rotate(
-//       angle: angle ?? -45,
-//       child: AnimatedOpacity(
-//         duration: Duration(milliseconds: 900),
-//         opacity: opacity ?? 1.0,
-//         child: Container(
-//           decoration: BoxDecoration(
-//               borderRadius: BorderRadius.circular(53),
-//               color: color ?? Colors.green),
-//           width: 200.0,
-//           height: 70.0,
-//         ),
-//       ),
-//     );
-//   }
-// }

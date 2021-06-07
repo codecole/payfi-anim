@@ -77,19 +77,11 @@ class _AnimSampleState extends State<AnimSample>
           Center(
               child: SlideTransition(
             position: _offsetAnimation,
-            child: GestureDetector(
-              onHorizontalDragStart: (DragUpdateDetails) {
-                print('we are here');
-              },
-              onHorizontalDragEnd: (DragUpdateDetails) {
-                print(' no here');
-              },
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  backgroundColor: Colors.red,
-                  radius: 30.0,
-                ),
+            child: Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: Colors.red,
+                radius: 30.0,
               ),
             ),
           )),
