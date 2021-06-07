@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AnimSample(),
-      // home: Anim(),
+      // home: AnimSample(),
+      home: Anim(),
     );
     // home: Trial2());
   }

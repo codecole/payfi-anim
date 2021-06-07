@@ -130,6 +130,7 @@ class RoundedRectangle extends StatelessWidget {
       transform: Matrix4.skew(0.0, 0.0)
         ..rotateZ(angle ?? -45)
         ..scale(scale ?? 0.5),
+      // origin: Offset(-125, 0),
       child: AnimatedOpacity(
         duration: Duration(milliseconds: 900),
         opacity: opacity ?? 0.5,
