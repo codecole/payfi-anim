@@ -72,8 +72,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                       alignment: FractionalOffset.center,
                       angle: -_angle.value,
                       origin: Offset(-125, 0),
-                      child: Transform.scale(
-                          scale: _containterSize.value, child: child));
+                      child: child);
                 },
               ),
             ),
