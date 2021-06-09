@@ -90,7 +90,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                     child: SlideTransition(
                       position: _offsetAnimation,
                       child: Draggable(
-                        // dragAnchor: DragAnchor.pointer,
+                        dragAnchor: DragAnchor.pointer,
                         onDragEnd: (DraggableDetails details) {
                           var x = _dragPosition.dx;
                           var y = _dragPosition.dy;
