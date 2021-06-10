@@ -29,8 +29,8 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
         AnimationController(vsync: this, duration: Duration(seconds: 1))
           ..forward();
     _offsetAnimation = Tween<Offset>(
-      begin: Offset(1.0, 0.5),
-      end: Offset(-0.1, 0.5),
+      begin: Offset(1.0, 0.44),
+      end: Offset(-0.1, 0.44),
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
     _angle = Tween<double>(begin: (math.pi * 5) / 180, end: math.pi / 4)
@@ -89,9 +89,11 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                     offset: _dragPosition,
                     child: SlideTransition(
                       position: _offsetAnimation,
-                      child: Draggable(
+                      child: Draggable<int>(
+                        
                         dragAnchor: DragAnchor.pointer,
                         onDragEnd: (DraggableDetails details) {
+                          // return;
                           var x = _dragPosition.dx;
                           var y = _dragPosition.dy;
                           if (x < 0) {
@@ -125,11 +127,9 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                           });
                           print(Offset(x, y));
                         },
-                        onDragStarted: () {
-                          print('hellp');
-                        },
-
+                        onDragStarted: () {},
                         onDragUpdate: (DragUpdateDetails upd) {
+                          // return;
                           if (selectedCylinderIndex == null) {
                             var hyp = math.sqrt((upd.delta.dx * upd.delta.dx) +
                                 (upd.delta.dy * upd.delta.dy));
@@ -137,24 +137,32 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                                     upd.delta.dx) /
                                 hyp;
                             var angle = math.acos(sineAngle);
-                            // print('angle');
-                            // print(angle);
-                            if (angle > 0.8) {
+                            if (angle > 0.65) {
                               selectedCylinderIndex = upd.delta.dy < 0 ? 1 : -1;
                               dXLimit = 119.5;
                             } else {
                               selectedCylinderIndex = 0;
                               dXLimit = 180.5;
                             }
-                            print(selectedCylinderIndex);
                           }
 
                           var x = _dragPosition.dx + upd.delta.dx;
                           var y = _dragPosition.dy + upd.delta.dy;
 
+                          // setState(() {
+                          //   _dragPosition = Offset(x, y);
+                          // });
+                          // return;
+
                           if (x < 0) {
                             x = 0;
                             y = 0;
+                          }
+
+                          if (y > 0 && y > dYLimit) {
+                            y = dYLimit;
+                          } else if (y < 0 && y < -dYLimit) {
+                            y = -dYLimit;
                           }
 
                           if (x > y) {
@@ -164,31 +172,25 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                           } else {
                             x = -y * selectedCylinderIndex;
                           }
+                          if (selectedCylinderIndex == 0) {
+                            y = 0;
+                          }
 
                           if (x > (dXLimit)) {
                             x = dXLimit;
                           }
-
-                          if (y > 0 && y > dYLimit) {
-                            y = dYLimit;
-                          } else if (y < 0 && y < -dYLimit) {
-                            y = -dYLimit;
-                          }
-                          // if ((y * selectedCylinderIndex) > (dYLimit * selectedCylinderIndex)) {
-                          //   y = dYLimit * selectedCylinderIndex;
-                          // }
                           if (x <= 0) {
                             selectedCylinderIndex = null;
                           }
-
-                          print(Offset(x, y));
                           setState(() {
                             _dragPosition = Offset(x, y);
                           });
                         },
                         feedback: SizedBox(),
                         child: Padding(
-                          padding: EdgeInsets.only(left: 1.0),
+                          padding: EdgeInsets.only(
+                            left: 1.0,
+                          ),
                           child: CircleAvatar(
                             backgroundColor: Colors.red,
                             radius: 35.0,
@@ -252,7 +254,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
         //   alignment: Alignment.centerRight,
         //   child: Padding(
         //     padding: const EdgeInsets.all(8.0),
-        //     child: DragTarget(
+        //     child: DragTarget<int>(
         //       builder: (BuildContext context, List<Object> candidateData,
         //           List<dynamic> rejectedData) {
         //         return CircleAvatar(
@@ -263,6 +265,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
         //       onAccept: (obj) {
         //         print('accepted');
         //       },
+        //       onWillAccept: (obj) => true,
         //     ),
         //   ),
         // ),
