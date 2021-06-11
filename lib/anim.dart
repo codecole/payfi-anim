@@ -257,12 +257,21 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
           builder: (c, s) => s.connectionState == ConnectionState.done
               ? Center(
                   child: Padding(
-                  padding: EdgeInsets.only(left: 70.0),
-                  child: Text(
-                    text,
-                    style: TextStyle(
-                        color: Colors.orangeAccent,
-                        fontWeight: FontWeight.bold),
+                  padding: EdgeInsets.only(left: 120.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        text,
+                        style: TextStyle(
+                            color: Colors.orangeAccent,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Icon(
+                        Icons.arrow_right,
+                        color: Colors.orange,
+                      )
+                    ],
                   ),
                 ))
               : Container(),
