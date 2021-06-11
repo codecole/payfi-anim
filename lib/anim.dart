@@ -90,7 +90,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
       curve: Curves.ease,
     ));
 
-    _opacity = Tween<double>(begin: 0.1, end: 1).animate(CurvedAnimation(
+    _opacity = Tween<double>(begin: 0.05, end: 1).animate(CurvedAnimation(
       parent: _controller,
       // curve: Interval(0.12, 0.25, curve: Curves.ease),
       curve: Curves.ease,
