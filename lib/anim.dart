@@ -73,24 +73,21 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
             child: Center(
               child: Stack(
                 children: [
-                  buildAnimatedCylinder(
-                    1,
-                    Color(0xFF05F182),
-                    // Colors.black),
-                  ),
+                  buildAnimatedCylinder(1, Color(0xFF05F182), 'Sample'),
                   Positioned(
                       top: 25,
-                      child: buildAnimatedCylinder(0, Color(0xff0815B3))),
+                      child: buildAnimatedCylinder(
+                          0, Color(0xff0815B3), 'Sample 3')),
                   Padding(
                     padding: EdgeInsets.only(top: 55),
-                    child: buildAnimatedCylinder(-1, Color(0xFF05F182)),
+                    child: buildAnimatedCylinder(
+                        -1, Color(0xFF05F182), 'Sample 2'),
                   ),
                   Transform.translate(
                     offset: _dragPosition,
                     child: SlideTransition(
                       position: _offsetAnimation,
                       child: Draggable<int>(
-                        
                         dragAnchor: DragAnchor.pointer,
                         onDragEnd: (DraggableDetails details) {
                           // return;
@@ -221,7 +218,8 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget buildAnimatedCylinder(int angleMultiplier, Color boxColor) {
+  Widget buildAnimatedCylinder(
+      int angleMultiplier, Color boxColor, String displayText) {
     return AnimatedBuilder(
       animation: _controller,
       // child: ,
@@ -235,12 +233,16 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                 transform:
                     Matrix4.diagonal3Values(_containterSize.value, 1, 1.0),
                 // origin: Offset(-125, 40),
-                child: cylinder(250.0, boxColor)));
+                child: cylinder(
+                  250.0,
+                  boxColor,
+                  displayText,
+                )));
       },
     );
   }
 
-  Widget cylinder(height, color) {
+  Widget cylinder(height, color, text) {
     return Opacity(
       opacity: _opacity.value,
       child: Container(
@@ -250,6 +252,21 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
         ),
         width: height,
         height: 80.0,
+        child: FutureBuilder(
+          future: Future.delayed(Duration(milliseconds: 400)),
+          builder: (c, s) => s.connectionState == ConnectionState.done
+              ? Center(
+                  child: Padding(
+                  padding: EdgeInsets.only(left: 70.0),
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                        color: Colors.orangeAccent,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ))
+              : Container(),
+        ),
         // child: Align(
         //   alignment: Alignment.centerRight,
         //   child: Padding(
