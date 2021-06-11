@@ -163,6 +163,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                           if (x <= dXLimit / 2) {
                             x = 0;
                             y = 0;
+                            selectedCylinderIndex = null;
                           }
                           setState(() {
                             _dragPosition = Offset(x, y);
@@ -177,13 +178,16 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                                     upd.delta.dx) /
                                 hyp;
                             var angle = math.acos(sineAngle);
-                            if (angle > 0.65) {
+                            print(angle);
+                            if (angle > 0.2) {
                               selectedCylinderIndex = upd.delta.dy < 0 ? 1 : -1;
                               dXLimit = 119.5;
                             } else {
                               selectedCylinderIndex = 0;
                               dXLimit = 180.5;
                             }
+                          } else {
+                            print(selectedCylinderIndex);
                           }
 
                           var x = _dragPosition.dx + upd.delta.dx;
