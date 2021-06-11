@@ -90,7 +90,6 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                       child: Draggable<int>(
                         dragAnchor: DragAnchor.pointer,
                         onDragEnd: (DraggableDetails details) {
-                          // return;
                           var x = _dragPosition.dx;
                           var y = _dragPosition.dy;
                           if (x < 0) {
@@ -108,6 +107,11 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
 
                           if (x > dXLimit / 2) {
                             x = dXLimit;
+                            Future.delayed(Duration(seconds: 2), () {
+                              setState(() {
+                                _dragPosition = Offset(0, 0);
+                              });
+                            });
                           }
                           if (y > 0 && y > dYLimit / 2) {
                             y = dYLimit;
@@ -122,11 +126,9 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                           setState(() {
                             _dragPosition = Offset(x, y);
                           });
-                          print(Offset(x, y));
                         },
                         onDragStarted: () {},
                         onDragUpdate: (DragUpdateDetails upd) {
-                          // return;
                           if (selectedCylinderIndex == null) {
                             var hyp = math.sqrt((upd.delta.dx * upd.delta.dx) +
                                 (upd.delta.dy * upd.delta.dy));
@@ -145,11 +147,6 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
 
                           var x = _dragPosition.dx + upd.delta.dx;
                           var y = _dragPosition.dy + upd.delta.dy;
-
-                          // setState(() {
-                          //   _dragPosition = Offset(x, y);
-                          // });
-                          // return;
 
                           if (x < 0) {
                             x = 0;
@@ -276,25 +273,6 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                 ))
               : Container(),
         ),
-        // child: Align(
-        //   alignment: Alignment.centerRight,
-        //   child: Padding(
-        //     padding: const EdgeInsets.all(8.0),
-        //     child: DragTarget<int>(
-        //       builder: (BuildContext context, List<Object> candidateData,
-        //           List<dynamic> rejectedData) {
-        //         return CircleAvatar(
-        //           backgroundColor: Colors.yellow,
-        //           radius: 35.0,
-        //         );
-        //       },
-        //       onAccept: (obj) {
-        //         print('accepted');
-        //       },
-        //       onWillAccept: (obj) => true,
-        //     ),
-        //   ),
-        // ),
       ),
     );
   }
