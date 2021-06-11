@@ -13,7 +13,6 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
   Animation<double> _angle;
   Animation<double> _containterSize;
   Animation<double> _opacity;
-
   var _dragPosition = Offset(0, 0);
 
   var dXLimit = 119.5;
@@ -22,12 +21,58 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
 
   int selectedCylinderIndex;
 
+  var isOpened = false;
+
+  Future<Object> goToPage() {
+    var text = '';
+    switch (selectedCylinderIndex) {
+      case 1:
+        {
+          text = 'Sample 2';
+          break;
+        }
+      case 0:
+        {
+          text = 'Sample 3';
+          break;
+        }
+      case -1:
+        {
+          text = 'Sample';
+          break;
+        }
+      default:
+        break;
+    }
+
+    return Navigator.of(context).push(MaterialPageRoute(builder: (builder) {
+      return DemoPage(title: text);
+    })).then((value) {
+      setState(() {
+        _dragPosition = Offset(0, 0);
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+
     _controller =
         AnimationController(vsync: this, duration: Duration(seconds: 1))
-          ..forward();
+          ..forward()
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              setState(() {
+                isOpened = true;
+              });
+            } else if (status == AnimationStatus.dismissed) {
+              setState(() {
+                isOpened = false;
+              });
+            }
+          });
+
     _offsetAnimation = Tween<Offset>(
       begin: Offset(1.0, 0.44),
       end: Offset(-0.1, 0.44),
@@ -45,7 +90,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
       curve: Curves.ease,
     ));
 
-    _opacity = Tween<double>(begin: 0.02, end: 1).animate(CurvedAnimation(
+    _opacity = Tween<double>(begin: 0.1, end: 1).animate(CurvedAnimation(
       parent: _controller,
       // curve: Interval(0.12, 0.25, curve: Curves.ease),
       curve: Curves.ease,
@@ -102,16 +147,12 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                               y = -x * selectedCylinderIndex;
                             }
                           } else {
-                            x = -y * selectedCylinderIndex;
+                            x = -y * (selectedCylinderIndex ?? 0);
                           }
 
                           if (x > dXLimit / 2) {
                             x = dXLimit;
-                            Future.delayed(Duration(seconds: 2), () {
-                              setState(() {
-                                _dragPosition = Offset(0, 0);
-                              });
-                            });
+                            goToPage();
                           }
                           if (y > 0 && y > dYLimit / 2) {
                             y = dYLimit;
@@ -240,40 +281,65 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
   }
 
   Widget cylinder(height, color, text) {
-    return Opacity(
-      opacity: _opacity.value,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(53),
-          color: color,
-        ),
-        width: height,
-        height: 80.0,
-        child: FutureBuilder(
-          future: Future.delayed(Duration(milliseconds: 400)),
-          builder: (c, s) => s.connectionState == ConnectionState.done
-              ? Center(
-                  child: Padding(
-                  padding: EdgeInsets.only(left: 120.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        text,
-                        style: TextStyle(
-                            color: Colors.orangeAccent,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Icon(
-                        Icons.arrow_right,
-                        color: Colors.orange,
-                      )
-                    ],
+    return SizedBox(
+      height: 80,
+      child: Stack(
+        children: [
+          Opacity(
+            opacity: _opacity.value,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(53),
+                color: color,
+              ),
+              width: height,
+              height: 80.0,
+            ),
+          ),
+          AnimatedPositioned(
+            right: isOpened ? 10 : 100,
+            top: 0,
+            bottom: 0,
+            duration: Duration(milliseconds: 500),
+            child: AnimatedOpacity(
+              duration: Duration(milliseconds: 500),
+              opacity: isOpened ? 1 : 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    text,
+                    style: TextStyle(
+                        color: Colors.orangeAccent,
+                        fontWeight: FontWeight.bold),
                   ),
-                ))
-              : Container(),
-        ),
+                  SizedBox(width: 18),
+                  Icon(
+                    Icons.arrow_right,
+                    color: Colors.orange,
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
       ),
+    );
+  }
+}
+
+class DemoPage extends StatelessWidget {
+  final String title;
+  DemoPage({this.title});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Center(child: Text(title)),
     );
   }
 }
