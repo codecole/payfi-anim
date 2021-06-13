@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-class Anim extends StatefulWidget {
+class Anim2 extends StatefulWidget {
   @override
-  State<Anim> createState() => _AnimState();
+  State<Anim2> createState() => _Anim2State();
 }
 
-class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
+class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation<Offset> _offsetAnimation;
   bool isStatic = true;
@@ -127,6 +127,38 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> stackChildren = <Widget>[
+      buildAnimatedCylinder(
+          1, Color(0xFF05F182), 'Sample', Colors.black, Colors.pink),
+      Positioned(
+          top: 25,
+          child: buildAnimatedCylinder(
+              0, Color(0xff0815B3), 'Sample 3', Colors.red, Colors.yellow)),
+      Padding(
+        padding: EdgeInsets.only(top: 55),
+        child: buildAnimatedCylinder(
+            -1, Color(0xFF05F182), 'Sample 2', Colors.purple, Colors.red),
+      ),
+    ];
+
+    void reArrange() {
+      setState(() {
+        stackChildren = <Widget>[
+          Positioned(
+              top: 25,
+              child: buildAnimatedCylinder(
+                  0, Color(0xff0815B3), 'Sample 3', Colors.red, Colors.yellow)),
+          buildAnimatedCylinder(
+              1, Color(0xFF05F182), 'Sample', Colors.black, Colors.pink),
+          Padding(
+            padding: EdgeInsets.only(top: 55),
+            child: buildAnimatedCylinder(
+                -1, Color(0xFF05F182), 'Sample 2', Colors.purple, Colors.red),
+          ),
+        ];
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Demo Anim'),
@@ -140,16 +172,8 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
             child: Center(
               child: Stack(
                 children: [
-                  buildAnimatedCylinder(1, Color(0xFF05F182), 'Sample',
-                      Colors.black, Colors.pink),
-                  Positioned(
-                      top: 25,
-                      child: buildAnimatedCylinder(0, Color(0xff0815B3),
-                          'Sample 3', Colors.red, Colors.yellow)),
-                  Padding(
-                    padding: EdgeInsets.only(top: 55),
-                    child: buildAnimatedCylinder(-1, Color(0xFF05F182),
-                        'Sample 2', Colors.purple, Colors.red),
+                  Stack(
+                    children: stackChildren,
                   ),
                   Transform.translate(
                     offset: _dragPosition,
@@ -207,6 +231,7 @@ class _AnimState extends State<Anim> with SingleTickerProviderStateMixin {
                               dXLimit = 119.5;
                             } else {
                               selectedCylinderIndex = 0;
+
                               dXLimit = 180.5;
                             }
                           } else {

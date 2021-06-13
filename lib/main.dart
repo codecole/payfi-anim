@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:payfi_anim/anim_copy.dart';
 import 'package:payfi_anim/anim.dart';
-
-import 'package:payfi_anim/anim_sample.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,9 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // home: AnimSample(),
-      home: Anim(),
+      home: Anim2(),
     );
-    // home: Trial2());
   }
 }
