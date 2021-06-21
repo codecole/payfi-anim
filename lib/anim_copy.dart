@@ -28,7 +28,7 @@ class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
     switch (selectedCylinderIndex) {
       case 1:
         {
-          text = 'Sample 2';
+          text = 'Cylinder 2';
           Navigator.push(
                   context, MaterialPageRoute(builder: (context) => DemoPage1()))
               .then((value) => setState(() {
@@ -39,7 +39,7 @@ class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
         }
       case 0:
         {
-          text = 'Sample 3';
+          text = 'Cylinder 3';
           Navigator.push(
                   context, MaterialPageRoute(builder: (context) => DemoPage2()))
               .then((value) => setState(() {
@@ -50,7 +50,7 @@ class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
         }
       case -1:
         {
-          text = 'Sample';
+          text = 'Cylinder 1';
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -127,36 +127,36 @@ class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> stackChildren = <Widget>[
-      buildAnimatedCylinder(
-          1, Color(0xFF05F182), 'Sample', Colors.black, Colors.pink),
-      Positioned(
-          top: 25,
-          child: buildAnimatedCylinder(
-              0, Color(0xff0815B3), 'Sample 3', Colors.red, Colors.yellow)),
-      Padding(
-        padding: EdgeInsets.only(top: 55),
+    var cylinder3 = Positioned(
+        top: 25,
         child: buildAnimatedCylinder(
-            -1, Color(0xFF05F182), 'Sample 2', Colors.purple, Colors.red),
-      ),
-    ];
+            0, Color(0xff0815B3), 'Cylinder 3', Colors.red, Colors.yellow));
+    var cylinder1 = buildAnimatedCylinder(
+        1, Colors.yellow, 'Cylinder 1', Colors.black, Colors.pink);
+    var cylinder2 = Padding(
+      padding: EdgeInsets.only(top: 55),
+      child: buildAnimatedCylinder(
+          -1, Color(0xFF05F182), 'Cylinder 2', Colors.purple, Colors.red),
+    );
 
-    void reArrange() {
-      setState(() {
-        stackChildren = <Widget>[
-          Positioned(
-              top: 25,
-              child: buildAnimatedCylinder(
-                  0, Color(0xff0815B3), 'Sample 3', Colors.red, Colors.yellow)),
-          buildAnimatedCylinder(
-              1, Color(0xFF05F182), 'Sample', Colors.black, Colors.pink),
-          Padding(
-            padding: EdgeInsets.only(top: 55),
-            child: buildAnimatedCylinder(
-                -1, Color(0xFF05F182), 'Sample 2', Colors.purple, Colors.red),
-          ),
-        ];
-      });
+    List<Widget> getCurrent() {
+      switch (selectedCylinderIndex) {
+        case 0:
+          return [cylinder1, cylinder2, cylinder3];
+        case 1:
+          return [cylinder3, cylinder1, cylinder2];
+        case -1:
+          return [cylinder3, cylinder2, cylinder1];
+        default:
+          return [cylinder3, cylinder1, cylinder2];
+      }
+    }
+
+    Widget getStack() {
+      return Stack(
+        key: Key('$selectedCylinderIndex'),
+        children: getCurrent(),
+      );
     }
 
     return Scaffold(
@@ -172,8 +172,9 @@ class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
             child: Center(
               child: Stack(
                 children: [
-                  Stack(
-                    children: stackChildren,
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 0),
+                    child: getStack(),
                   ),
                   Transform.translate(
                     offset: _dragPosition,
@@ -231,7 +232,6 @@ class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
                               dXLimit = 119.5;
                             } else {
                               selectedCylinderIndex = 0;
-
                               dXLimit = 180.5;
                             }
                           } else {
@@ -313,7 +313,6 @@ class _Anim2State extends State<Anim2> with SingleTickerProviderStateMixin {
       String displayText, Color textColor, Color iconColor) {
     return AnimatedBuilder(
       animation: _controller,
-      // child: ,
       builder: (context, child) {
         return Transform.rotate(
             // transform: Matrix4.skew(0, 0)..rotateZ(_angle.value),
